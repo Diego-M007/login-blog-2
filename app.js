@@ -144,6 +144,34 @@ app.post('/delete_post/:id', (req, res) => {
     });
 });
 
+
+// Rota para exibir a página de edição de postagem
+app.get('/edit/:postId', (req, res) => {
+    const postId = req.params.postId;
+    const query = 'SELECT * FROM posts WHERE id = ?';
+    db.query(query, [postId], (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+            const post = results[0];
+            res.render('pages/edit_post', { req: req, post: post });
+        } else {
+            res.status(404).send('Postagem não encontrada.');
+        }
+    });
+});
+
+// Rota para processar a edição da postagem
+app.post('/edit/:postId', (req, res) => {
+    const postId = req.params.postId;
+    const { titulo, conteudo } = req.body;
+    const query = 'UPDATE posts SET titulo = ?, conteudo = ? WHERE id = ?';
+    db.query(query, [titulo, conteudo, postId], (err, result) => {
+        if (err) throw err;
+        res.redirect('/'); // Redirecionar para a página inicial após a edição
+    });
+});
+
+
 // const query = 'INSERT INTO users (username, password) VALUES (?, SHA1(?))';
 // console.log(`POST /CADASTRAR -> query -> ${query}`);
 // db.query(query, [username, password], (err, results) => {
@@ -245,7 +273,7 @@ app.get('/teste', (req, res) => {
 });
 
 
-app.listen(3000, () => {
+app.listen(4000, () => {
     console.log('----Login (MySQL version)-----')
-    console.log('Servidor rodando na porta 3000');
+    console.log('Servidor rodando na porta 4000');
 });

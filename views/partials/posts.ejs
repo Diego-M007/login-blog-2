@@ -4,11 +4,10 @@
             <div class="card-body">
                 <h1 class="card-title"><%- post.titulo %></h1> 
                 <p class="cardText"><%- post.conteudo %></p>
-                <p class="cardText">Autor: <%= post.autor %></p>
-                <p class="cardText">Data de postagem: <%=new Date(post.datapostagem).toLocaleString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})%></p>
-
-                <% console.log('Usuário logado:', req.session.username); %>
-                <% console.log('Autor do post:', post.autor); %>
+                <p class="cardText"><%- new Date(post.datapostagem).toLocaleString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',}) %></p>
+                <% if(req.session.loggedin && req.session.username === post.autor || req.session.admin){ %>
+                    <a href="/edit/<%= post.id %>" class="btn btn-primary">Editar</a>
+                <% } %>
 
                 <% if(req.session.loggedin && (req.session.username === post.autor || req.session.username === 'admin')) { %>
                     <form action="/delete_post/<%= post.id %>" method="POST">
